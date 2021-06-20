@@ -58,10 +58,9 @@ class PrepModule:
         XC = self.browser.find_element_by_xpath('/html/body/div[4]/div/div/div[1]/div[5]/div[1]/div/table/tbody/tr[3]/td[2]/span')
         Xclass = XC.text
 
-        warning = solar + Xclass
+        warning = f'{solar}, the chance of X Class solar storm {Xclass}'
 
         #print(Xclass, solar)
-        self.browser.close()
         return warning
 
     #Gets volcano status for iceland
@@ -152,7 +151,6 @@ class PrepModule:
         self.browser.find_element_by_xpath('//*[@id="South-Gloucestershire"]').click()
         time.sleep(1)
         covidcases = self.browser.find_element_by_xpath('/html/body/div/div[1]/div[3]/div/div/p[1]').text
-        self.browser.close()
         return covidcases
 
     #WHO watchlist and outbreaks
@@ -179,8 +177,6 @@ class PrepModule:
                 pass
         if outbreaknews == '':
             outbreaknews = ['No new outbreaks!']
-
-        self.browser.close()
 
         return outbreaknews
 
