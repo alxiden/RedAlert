@@ -30,7 +30,7 @@ class PrepModule:
             print(source['name'])
 
     #gets local earthquake events
-    def earthquake():
+    def earthquake(self):
 
         res = requests.get("https://www.volcanodiscovery.com/earthquakes/today.html")
         soup = BeautifulSoup(res.content, 'html.parser')
@@ -39,7 +39,7 @@ class PrepModule:
         return earthq
     
     #gets local weather events
-    def Weather():
+    def Weather(self):
         today = date.today()
         today = today.day
         #print(today)
@@ -184,7 +184,7 @@ class PrepModule:
 
         return outbreaknews
 
-    def asteroid():
+    def asteroid(self):
         asteroids =[]
         res = requests.get('https://ssd-api.jpl.nasa.gov/sentry.api?all=1&days=7')
         data  = res.json()
