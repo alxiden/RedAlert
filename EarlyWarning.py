@@ -31,13 +31,13 @@ if __name__ == "__main__":
 
     RedAlert = PrepModule(api,volcanosa,volcanosb,volcanosc,source,querys,filters,browser)
 
-    asteroids = RedAlert.asteroid
+    asteroids = RedAlert.asteroid()
     volcanos = RedAlert.volcano()
-    solar = RedAlert.Solar
-    weather = RedAlert.Weather
+    solar = RedAlert.Solar()
+    weather = RedAlert.Weather()
     news = RedAlert.newssearch()
     covid = RedAlert.covid()
-    outbreaks = RedAlert.outbreak
+    outbreaks = RedAlert.outbreak()
 
     email_message = f''' 
 {asteroids}
