@@ -5,7 +5,5 @@ Looks at news sources from BBC and the independent with key words like 'War' and
 
 Also uses sites like www.volcanodiscovery.com and www.spaceweatherlive.com to check for volcanos and solar flares.
 
-Uses the NASA api to check for near earth objects and covid maps to track covid cases in south glostishire.
+Uses the NASA api to check for near earth objects and covid maps to track covid cases in south gloucestershire.
 
-Currnet know problems:
-some volcanos pulling wrong part of the page for info
