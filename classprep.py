@@ -185,7 +185,7 @@ class PrepModule:
                 pass
         if outbreaknews == '':
             outbreaknews = ['No new outbreaks!']
-
+        self.browser.close()
         return outbreaknews
 
     def asteroid(self):
