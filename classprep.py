@@ -22,6 +22,20 @@ class PrepModule:
         self.filters = filters
         self.browser = browser
 
+    #Used in the volcano function
+    def statusSorter(soup):
+        if soup.find_all(string='restless') != []:
+            status = 'restless'
+            return status
+        elif soup.find_all(string='erupting') != []:
+            status = 'erupting'
+            return status
+        elif soup.find_all(string='minor activity or eruption warning'):
+            status = 'minor activity or eruption warning'
+            return status
+        else:
+            status = 'unconfirmed'
+            return status
 
     #print news sources availible
     def sources(self):
@@ -68,46 +82,40 @@ class PrepModule:
         volcanosstaus = []
         res = requests.get('https://www.volcanodiscovery.com/volcanoes/indonesia/sumatra/toba/')
         soup = BeautifulSoup(res.content, 'html.parser')
-        title = soup.select('b')[6].text
-        if title == 'normal or dormant':
+        status = soup.find_all(string='normal or dormant')
+        if status == ['normal or dormant']:
             pass
         else:
-            volcanosstaus.append(f'toba is currently {title}')
+            stat = self.statusSorter(soup)
+            volcanosstaus.append(f'toba is currently {stat}')
 
         for v in self.volcanosa:
-            a = 6
-            if v == 'Bardarbunga' or v == 'etna':
-                a = 7
-            elif v == 'campocalatrava':
-                a = 4
             res = requests.get(f'https://www.volcanodiscovery.com/{v.lower()}.html')
             soup = BeautifulSoup(res.content, 'html.parser')
-            title = soup.select('b')[a].text
-            if title == 'normal or dormant':
+            status = soup.find_all(string='normal or dormant')
+            if status == ['normal or dormant']:
                 pass
             else:
-                volcanosstaus.append(f'{v} is currently {title}')
+                stat = self.statusSorter(soup)
+                volcanosstaus.append(f'{v} is currently {stat}')
         for v in self.volcanosb:
-            if v == 'Snaefellsjokull':
-                res = requests.get('https://www.volcanodiscovery.com/iceland/snaefellsjoekull/')
-                soup = BeautifulSoup(res.content, 'html.parser')
-                title = soup.select('b')[5].text
-            else:
-                res = requests.get(f'https://www.volcanodiscovery.com/iceland/{v.lower()}.html')
-                soup = BeautifulSoup(res.content, 'html.parser')
-                title = soup.select('b')[5].text
-            if title == 'normal or dormant':
+            res = requests.get(f'https://www.volcanodiscovery.com/iceland/{v.lower()}.html')
+            soup = BeautifulSoup(res.content, 'html.parser')
+            status = soup.find_all(string='normal or dormant')
+            if status == ['normal or dormant']:
                 pass
             else:
-                volcanosstaus.append(f'{v} is currently {title}')
+                stat = self.statusSorter(soup)
+                volcanosstaus.append(f'{v} is currently {stat}')
         for v in self.volcanosc:
             res = requests.get(f'https://www.volcanodiscovery.com/volcanoes/europe/iceland/{v.lower()}/')
             soup = BeautifulSoup(res.content, 'html.parser')
-            title = soup.select('b')[5].text
-            if title == 'normal or dormant':
+            status = soup.find_all(string='normal or dormant')
+            if status == ['normal or dormant']:
                 pass
             else:
-                volcanosstaus.append(f'{v} is currently {title}')
+                stat = self.statusSorter(soup)
+                volcanosstaus.append(f'{v} is currently {stat}')
         return volcanosstaus
 
     #Searches news outlets
