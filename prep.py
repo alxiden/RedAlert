@@ -4,38 +4,26 @@ import time
 from datetime import date
 import requests
 from bs4 import BeautifulSoup
-
-import requests
-from selenium import webdriver
+import urllib.request
 
 class PrepModule:
 
     def __init__(
-        self,api,volcanosa,volcanosb,volcanosc,source, querys, filters, browser
+        self,api,source, querys, filters, browser, locationlist
     ):
         self.api = api
-        self.volcanosa = volcanosa
-        self.volcanosb = volcanosb
-        self.volcanosc = volcanosc
         self.source = source
         self.querys = querys
         self.filters = filters
         self.browser = browser
+        self.locationlist = locationlist
 
-    #Used in the volcano function
-    def statusSorter(soup):
-        if soup.find_all(string='restless') != []:
-            status = 'restless'
-            return status
-        elif soup.find_all(string='erupting') != []:
-            status = 'erupting'
-            return status
-        elif soup.find_all(string='minor activity or eruption warning'):
-            status = 'minor activity or eruption warning'
-            return status
-        else:
-            status = 'unconfirmed'
-            return status
+    def connectiontest(self):
+        try:
+            urllib.request.urlopen('https://twitter.com/', timeout=8)
+            return True
+        except:
+            return False
 
     #print news sources availible
     def sources(self):
@@ -48,8 +36,9 @@ class PrepModule:
 
         res = requests.get("https://www.volcanodiscovery.com/earthquakes/today.html")
         soup = BeautifulSoup(res.content, 'html.parser')
-        text = soup.select('div.textbox')[0].text
-        earthq = text
+        text = str(soup.select('div.textbox')[0].text)
+        x = text.index('...')
+        earthq = text[:x]
         return earthq
     
     #gets local weather events
@@ -79,43 +68,40 @@ class PrepModule:
 
     #Gets volcano status for iceland
     def volcano(self):
-        volcanosstaus = []
-        res = requests.get('https://www.volcanodiscovery.com/volcanoes/indonesia/sumatra/toba/')
+        res = requests.get('https://www.volcanodiscovery.com/erupting_volcanoes.html')
         soup = BeautifulSoup(res.content, 'html.parser')
-        status = soup.find_all(string='normal or dormant')
-        if status == ['normal or dormant']:
-            pass
-        else:
-            stat = self.statusSorter(soup)
-            volcanosstaus.append(f'toba is currently {stat}')
 
-        for v in self.volcanosa:
-            res = requests.get(f'https://www.volcanodiscovery.com/{v.lower()}.html')
-            soup = BeautifulSoup(res.content, 'html.parser')
-            status = soup.find_all(string='normal or dormant')
-            if status == ['normal or dormant']:
+        volcanosstaus = []
+        volcanoraw = str(soup.find_all(class_ = 'red'))
+        volcanolist = volcanoraw.split('</li>')
+        for item in volcanolist:
+            if 'unrest' in item:
+                status = 'unrest'
+            elif 'minor activity / eruption warning' in item:
+                status = 'minor activity / eruption warning'
+            elif 'erupting' in item:
+                status = 'erupting'
+            else:
+                status = 'unknown'
+            if '.html' not in item:
                 pass
             else:
-                stat = self.statusSorter(soup)
-                volcanosstaus.append(f'{v} is currently {stat}')
-        for v in self.volcanosb:
-            res = requests.get(f'https://www.volcanodiscovery.com/iceland/{v.lower()}.html')
-            soup = BeautifulSoup(res.content, 'html.parser')
-            status = soup.find_all(string='normal or dormant')
-            if status == ['normal or dormant']:
-                pass
-            else:
-                stat = self.statusSorter(soup)
-                volcanosstaus.append(f'{v} is currently {stat}')
-        for v in self.volcanosc:
-            res = requests.get(f'https://www.volcanodiscovery.com/volcanoes/europe/iceland/{v.lower()}/')
-            soup = BeautifulSoup(res.content, 'html.parser')
-            status = soup.find_all(string='normal or dormant')
-            if status == ['normal or dormant']:
-                pass
-            else:
-                stat = self.statusSorter(soup)
-                volcanosstaus.append(f'{v} is currently {stat}')
+                x = item.index('.html')
+                y = item.index('href="')
+                name = item[y:x]
+                name = name.replace('href="', '')
+                x = item.index(')')
+                y = item.index('(')
+                location = item[y:x]
+                for l in self.locationlist:
+                    if status == 'erupting':
+                        volcanostat = f'{name} in {location}) is currently {status}'
+                        volcanosstaus.append(volcanostat)
+                    elif l not in location :
+                        pass
+                    else:
+                        volcanostat = f'{name} in {location}) is currently {status}'
+                        volcanosstaus.append(volcanostat)
         return volcanosstaus
 
     #Searches news outlets
@@ -135,7 +121,7 @@ class PrepModule:
                 )
 
                 for article in all_articles['articles']:
-                    #title = (article['title'])
+                    #status = (article['title'])
                         if article['title'] in newsStorage:
                             #print(f'{title} is in storage')
                             pass
@@ -198,7 +184,7 @@ class PrepModule:
         else:
             name = item['fullname']
             ts = item['ts']
-            asteroids.append(f'{name} has a TS of {ts}')   
+            asteroids.append(f'{name} has a TS of {ts} (1-10)')   
 
         res = requests.get('https://ssd-api.jpl.nasa.gov/scout.api')
         data = res.json()
@@ -208,5 +194,5 @@ class PrepModule:
             else:
                 o = item['objectName']
                 s = item['rating']
-                asteroids.append(f'Object {o} has a impact score {s}')
+                asteroids.append(f'Object {o} has a impact score {s} (0-4)')
         return asteroids
