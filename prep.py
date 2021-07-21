@@ -93,14 +93,15 @@ class PrepModule:
                 x = item.index(')')
                 y = item.index('(')
                 location = item[y:x]
+                volcanostat = f'{name} in {location}) is currently {status}'
                 for l in self.locationlist:
-                    if status == 'erupting':
-                        volcanostat = f'{name} in {location}) is currently {status}'
+                    if volcanostat in volcanosstaus:
+                        pass
+                    elif status == 'erupting' and l not in location:
                         volcanosstaus.append(volcanostat)
                     elif l not in location :
                         pass
                     else:
-                        volcanostat = f'{name} in {location}) is currently {status}'
                         volcanosstaus.append(volcanostat)
         return volcanosstaus
 
