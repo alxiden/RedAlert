@@ -55,8 +55,11 @@ class PrepModule:
     #Checks the sun for solar activity
     def Solar(self):
         self.browser.get("https://www.spaceweatherlive.com/en/solar-activity/solar-flares.html")
-
-        warning = self.browser.find_element_by_xpath('//*[@class="alertbalk waarschuwing"]')
+        solarlist = self.browser.find_elements_by_xpath('//*[@class="alertbalk waarschuwing"]')
+        if solarlist == []:
+            warning =self.browser.find_element_by_xpath('//*[@class="alertbalk waarschuwing2"]')
+        else:
+            warning = self.browser.find_element_by_xpath('//*[@class="alertbalk waarschuwing"]')
         solar = warning.text
 
         XC = self.browser.find_element_by_xpath('/html/body/div[4]/div/div/div[1]/div[5]/div[1]/div/table/tbody/tr[3]/td[2]/span')
@@ -96,7 +99,6 @@ class PrepModule:
                 vollocation = item[y:x]
                 volcanostat = f'{name} in {vollocation}) is currently {status}' 
                 for l in self.locationlist:
-                    print(l)
                     if volcanostat in volcanosstaus:
                         pass
                     elif status == 'erupting' and l not in vollocation:
