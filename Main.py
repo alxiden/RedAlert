@@ -16,6 +16,9 @@ filters = [
     ]
 locationlist =['Italy', 'Iceland', 'Germany', 'France ', 'Northern Atlantic Ocean', 'Spain', 'Spanien', 'Czechia']
 
+#location used for flood warnings
+location = 'bs348xt'
+
 #Email stuff
 apiuser = 'sender'
 userpass = 'password'
@@ -23,7 +26,7 @@ recever = ''
 
 if __name__ == "__main__":
 
-    RedAlert = PrepModule(api,source,querys,filters,browser, locationlist)
+    RedAlert = PrepModule(api,source,querys,filters,browser, locationlist, location)
 
     if RedAlert.connectiontest() == False:
         print('No Connection to the internet')
@@ -36,6 +39,7 @@ if __name__ == "__main__":
         covid = RedAlert.covid()
         outbreaks = RedAlert.outbreak()
         earthquake = RedAlert.earthquake()
+        floods = RedAlert.floodwarnings()
 
         email_message = f''' 
 {asteroids}
@@ -53,6 +57,8 @@ if __name__ == "__main__":
 {outbreaks}
 
 {earthquake}
+
+{floods}
 '''
 
         with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp_server:
