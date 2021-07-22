@@ -9,7 +9,7 @@ import urllib.request
 class PrepModule:
 
     def __init__(
-        self,api,source, querys, filters, browser, locationlist
+        self,api,source, querys, filters, browser, locationlist, location
     ):
         self.api = api
         self.source = source
@@ -17,6 +17,7 @@ class PrepModule:
         self.filters = filters
         self.browser = browser
         self.locationlist = locationlist
+        self.location = location
 
     def connectiontest(self):
         try:
@@ -92,14 +93,15 @@ class PrepModule:
                 name = name.replace('href="', '')
                 x = item.index(')')
                 y = item.index('(')
-                location = item[y:x]
-                volcanostat = f'{name} in {location}) is currently {status}'
+                vollocation = item[y:x]
+                volcanostat = f'{name} in {vollocation}) is currently {status}' 
                 for l in self.locationlist:
+                    print(l)
                     if volcanostat in volcanosstaus:
                         pass
-                    elif status == 'erupting' and l not in location:
+                    elif status == 'erupting' and l not in vollocation:
                         volcanosstaus.append(volcanostat)
-                    elif l not in location :
+                    elif l not in vollocation :
                         pass
                     else:
                         volcanosstaus.append(volcanostat)
@@ -197,3 +199,16 @@ class PrepModule:
                 s = item['rating']
                 asteroids.append(f'Object {o} has a impact score {s} (0-4)')
         return asteroids
+    
+    def floodwarnings(self):
+        res = requests.get(f'https://check-for-flooding.service.gov.uk/location?q={self.location}#outlook')
+        soup = BeautifulSoup(res.content, 'html.parser')
+        data = str(soup.find_all(id = "outlook"))
+        x = data.index('<p>')
+        y = data.rindex('</p>')
+        data = data[x:y]
+        data = data.replace('<p>', '')
+        data = data.replace('</p>', '')
+        data = data.replace('<span>', '')
+        data = data.replace('</span>', '')
+        return data
