@@ -101,12 +101,12 @@ class PrepModule:
                 for l in self.locationlist:
                     if volcanostat in volcanosstaus:
                         pass
-                    elif status == 'erupting' and l not in vollocation:
+                    elif l in vollocation:
                         volcanosstaus.append(volcanostat)
                     elif l not in vollocation :
                         pass
                     else:
-                        volcanosstaus.append(volcanostat)
+                        volcanosstaus.append(f'{name} is Unknown')
         return volcanosstaus
 
     #Searches news outlets
