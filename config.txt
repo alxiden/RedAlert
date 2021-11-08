@@ -1,0 +1,26 @@
+api key =
+267427d315da494f9dd6b8c907f394cf
+
+News Source =
+BBC-News Independent
+
+News Querys =
+War Earthquake EMP Storm virus Nuclear Climate asteroid comet meteors riot volcano inflation
+
+News Filters =
+war EMP EMPs nuclear climate change storm virus outbreak variant asteroid comet meteors riot volcano inflation UK economy supercell biosecurity riots dead protesters
+
+Locations Of Intrest =
+Italy Iceland Germany France Atlantic Spain Spanien Czechia
+
+Location =
+location here
+
+Email User =
+email here
+
+Email Password =
+password here
+
+Email Recepitent =
+emaill here
