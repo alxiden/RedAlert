@@ -1,4 +1,3 @@
-
 import json
 import time
 from datetime import date
@@ -103,7 +102,7 @@ class PrepModule:
                         pass
                     elif l in vollocation:
                         volcanosstaus.append(volcanostat)
-                    elif l not in vollocation :
+                    elif l not in vollocation:
                         pass
                     else:
                         volcanosstaus.append(f'{name} is Unknown')
@@ -158,13 +157,27 @@ class PrepModule:
         today = date.today()
         d1 = today.strftime('''%Y''')
         d2 = today.strftime('''%B''')
-        self.browser.get("https://www.who.int/emergencies/disease-outbreak-news")
-        outbreaklist = self.browser.find_elements_by_class_name('sf-list-vertical__item')
+        res = requests.get('https://www.who.int/emergencies/disease-outbreak-news')
+        soup = BeautifulSoup(res.content, 'html.parser')
+        #print(soup)
+        outbreaklist = str(soup.find_all(class_ = 'sf-list-vertical__title'))
+        outbreaklist = outbreaklist.replace('</h4>, <h4 class="sf-list-vertical__title">', "")
+        outbreaklist = outbreaklist.replace('<span>', '')
+        outbreaklist = outbreaklist.replace('<span aria-hidden="true" class="full-title" style="display: none">', '')
+        outbreaklist = outbreaklist.replace('<span class="trimmed">',"")
+        outbreaklist = outbreaklist.replace('</span>', "")
+        outbreaklist = outbreaklist.replace('</h4>]', '')
+        outbreaklist = outbreaklist.replace('[<h4 class="sf-list-vertical__title">', '')
+
+        outbreaklist = outbreaklist.split('|')
+        #print(outbreaklist)
         for o in outbreaklist:
-            event = o.text
+            o = o.replace('\n', '')
+            #print(o)
+            event = o
             if str(d1) not in event:
                 break 
-            event = event.replace('Disease Outbreak News', '')
+            event = event.replace('Disease Outbreak News', ' ')
             if str(d1) not in event:
                 pass
             elif event == '':
@@ -201,12 +214,14 @@ class PrepModule:
                 s = item['rating']
                 asteroids.append(f'Object {o} has a impact score {s} (0-4)')
         return asteroids
-    
+
     def floodwarnings(self):
         res = requests.get(f'https://check-for-flooding.service.gov.uk/location?q={self.location}#outlook')
         soup = BeautifulSoup(res.content, 'html.parser')
-        data = str(soup.find_all(id = "outlook"))
-        x = data.index('<p>')
+        #print(soup)
+        data = str(soup.find_all(class_ = "govuk-body"))
+        print(data)
+        x = data.index('The flood risk for')
         y = data.rindex('</p>')
         data = data[x:y]
         data = data.replace('<p>', '')
