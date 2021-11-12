@@ -229,3 +229,6 @@ class PrepModule:
         data = data.replace('<span>', '')
         data = data.replace('</span>', '')
         return data
+
+    def resevoir_levels(self):
+        res = requests.get()
