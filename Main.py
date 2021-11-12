@@ -1,16 +1,16 @@
 
-from newsapi import NewsApiClient
+#from newsapi import NewsApiClient
 import smtplib
 from selenium import webdriver
 
 from prep import PrepModule
 
-config = open('config.txt')
+config = open('RedAlert\config.txt')
 config = config.readlines()
 
 apikey =config[1].replace('\n', '')
 
-api= NewsApiClient(api_key = apikey)
+#api= NewsApiClient(api_key = apikey)
 source = config[4].split()
 #News key words to search by
 querys = config[7].split()
@@ -32,7 +32,7 @@ browser = webdriver.Firefox()
 
 if __name__ == "__main__":
 
-    RedAlert = PrepModule(api,source,querys,filters,browser, locationlist, location)
+    RedAlert = PrepModule(source,querys,filters,browser, locationlist, location)
 
     if RedAlert.connectiontest() == False:
         print('No Connection to the internet')

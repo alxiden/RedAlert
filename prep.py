@@ -8,9 +8,9 @@ import urllib.request
 class PrepModule:
 
     def __init__(
-        self,api,source, querys, filters, browser, locationlist, location
+        self,source, querys, filters, browser, locationlist, location
     ):
-        self.api = api
+        #self.api = api
         self.source = source
         self.querys = querys
         self.filters = filters
@@ -220,7 +220,7 @@ class PrepModule:
         soup = BeautifulSoup(res.content, 'html.parser')
         #print(soup)
         data = str(soup.find_all(class_ = "govuk-body"))
-        print(data)
+        #print(data)
         x = data.index('The flood risk for')
         y = data.rindex('</p>')
         data = data[x:y]
