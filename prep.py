@@ -54,19 +54,16 @@ class PrepModule:
     #Checks the sun for solar activity
     def Solar(self):
         self.browser.get("https://www.spaceweatherlive.com/en/solar-activity/solar-flares.html")
-        solarlist = self.browser.find_elements_by_xpath('//*[@class="alertbalk waarschuwing"]')
-        if solarlist == []:
-            warning =self.browser.find_element_by_xpath('//*[@class="alertbalk waarschuwing2"]')
-        else:
-            warning = self.browser.find_element_by_xpath('//*[@class="alertbalk waarschuwing"]')
-        solar = warning.text
-
+        solar = self.browser.find_element_by_xpath('//*[@id="ActiveWarnings"]')
+        print(solar)
+        solar = solar.text
         XC = self.browser.find_element_by_xpath('/html/body/div[4]/div/div/div[1]/div[5]/div[1]/div/table/tbody/tr[3]/td[2]/span')
         Xclass = XC.text
 
         warning = f'{solar}, the chance of X Class solar storm {Xclass}'
 
         #print(Xclass, solar)
+        print(warning)
         return warning
 
     #Gets volcano status for iceland
@@ -192,6 +189,7 @@ class PrepModule:
         self.browser.close()
         return outbreaknews
 
+    #nasa scout and sentery to monitor near earth objects
     def asteroid(self):
         asteroids =[]
         res = requests.get('https://ssd-api.jpl.nasa.gov/sentry.api?all=1&days=7')
@@ -215,6 +213,7 @@ class PrepModule:
                 asteroids.append(f'Object {o} has a impact score {s} (0-4)')
         return asteroids
 
+    #local flood warnings by postcode
     def floodwarnings(self):
         res = requests.get(f'https://check-for-flooding.service.gov.uk/location?q={self.location}#outlook')
         soup = BeautifulSoup(res.content, 'html.parser')
@@ -230,5 +229,19 @@ class PrepModule:
         data = data.replace('</span>', '')
         return data
 
+    #south west resovoir levels used to monitor possible water shortages
     def resevoir_levels(self):
-        res = requests.get()
+        res = requests.get('https://www.southwestwater.co.uk/environment/a-precious-resource/current-reservoir-storages/')
+        soup = BeautifulSoup(res.content, 'html.parser')
+        #code = open("test.txt","w+")
+        #code.write(str(soup))
+        data = str(soup)
+        x1 = data.index('Total reservoir storage for the week')
+        y1 = data.index('</tbody>')
+        data = data[x1:y1]
+        data = data.replace('</td>', '')
+        data = data.replace('<td style="width: 27.78%; height: 18px; background-color: #eaeaea;">', '')
+        data = data.replace('</tr>', '')
+        return data
+        #print(data)
+        

@@ -46,14 +46,16 @@ if __name__ == "__main__":
         earthquake = RedAlert.earthquake()
         floods = RedAlert.floodwarnings()
         #news = RedAlert.newssearch()
+        resevoir = RedAlert.resevoir_levels()
 
         email_message = f''' 
 {asteroids}
-See https://cneos.jpl.nasa.gov/scout/#/ for more details
+See https://cneos.jpl.nasa.gov/scout/#/ for more details.
 
 {volcanos}
 
 {solar}
+See https://www.spaceweatherlive.com/en/solar-activity/solar-flares.html for more information.
 
 {weather}
 
@@ -64,6 +66,8 @@ See https://cneos.jpl.nasa.gov/scout/#/ for more details
 {earthquake}
 
 {floods}
+
+{resevoir}
 '''
 
         with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp_server:
