@@ -5,7 +5,7 @@ from selenium import webdriver
 
 from prep import PrepModule
 
-config = open('RedAlert\config.txt')
+config = open(r'RedAlert\config.txt')
 config = config.readlines()
 
 apikey =config[1].replace('\n', '')
