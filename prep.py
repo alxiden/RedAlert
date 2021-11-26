@@ -63,7 +63,7 @@ class PrepModule:
         warning = f'{solar}, the chance of X Class solar storm {Xclass}'
 
         #print(Xclass, solar)
-        print(warning)
+        #print(warning)
         return warning
 
     #Gets volcano status for iceland
@@ -103,7 +103,9 @@ class PrepModule:
                         pass
                     else:
                         volcanosstaus.append(f'{name} is Unknown')
-        return volcanosstaus
+        volcanolevel = len(volcanosstaus)
+        vol = f'Volcano alert level scale of 1 to 20: {volcanolevel}'
+        return vol
 
     #Searches news outlets
     def newssearch(self):
@@ -191,16 +193,24 @@ class PrepModule:
 
     #nasa scout and sentery to monitor near earth objects
     def asteroid(self):
-        asteroids =[]
+        chance = 1
+        asteroids =''
         res = requests.get('https://ssd-api.jpl.nasa.gov/sentry.api?all=1&days=7')
         data  = res.json()
         for item in data['data']:
             if item['ts'] == '0':
                 pass
-        else:
-            name = item['fullname']
-            ts = item['ts']
-            asteroids.append(f'{name} has a TS of {ts} (1-10)')   
+            else:
+                name = item['fullname']
+                ts = item['ts'] 
+                tsi = int(ts)  
+                if tsi in range(0,5):
+                    chance = chance + tsi
+                elif tsi in range(5,8):
+                    chance = chance + (tsi * 5)
+                elif tsi in range(8,11):
+                    chance = chance + (tsi * 10)
+                
 
         res = requests.get('https://ssd-api.jpl.nasa.gov/scout.api')
         data = res.json()
@@ -208,9 +218,13 @@ class PrepModule:
             if item['rating'] == '0' or item['rating'] == None:
                 pass
             else:
-                o = item['objectName']
-                s = item['rating']
-                asteroids.append(f'Object {o} has a impact score {s} (0-4)')
+                ir = item['rating']
+                if ir == '1' or ir == '2':
+                    chance = chance + 1
+                elif ir == '3' or ir == '4':
+                    chance = chance + (ir * 5)
+
+        asteroids = f'Chance of an asteroid strike in the near future {chance}%'
         return asteroids
 
     #local flood warnings by postcode
