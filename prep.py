@@ -152,42 +152,19 @@ class PrepModule:
 
     #WHO watchlist and outbreaks
     def outbreak(self):
-        outbreaknews = ''
-        today = date.today()
-        d1 = today.strftime('''%Y''')
-        d2 = today.strftime('''%B''')
+        outbreaknews = []
         res = requests.get('https://www.who.int/emergencies/disease-outbreak-news')
         soup = BeautifulSoup(res.content, 'html.parser')
-        #print(soup)
-        outbreaklist = str(soup.find_all(class_ = 'sf-list-vertical__title'))
-        outbreaklist = outbreaklist.replace('</h4>, <h4 class="sf-list-vertical__title">', "")
-        outbreaklist = outbreaklist.replace('<span>', '')
-        outbreaklist = outbreaklist.replace('<span aria-hidden="true" class="full-title" style="display: none">', '')
-        outbreaklist = outbreaklist.replace('<span class="trimmed">',"")
-        outbreaklist = outbreaklist.replace('</span>', "")
-        outbreaklist = outbreaklist.replace('</h4>]', '')
-        outbreaklist = outbreaklist.replace('[<h4 class="sf-list-vertical__title">', '')
-
-        outbreaklist = outbreaklist.split('|')
-        #print(outbreaklist)
-        for o in outbreaklist:
-            o = o.replace('\n', '')
-            #print(o)
-            event = o
-            if str(d1) not in event:
-                break 
-            event = event.replace('Disease Outbreak News', ' ')
-            if str(d1) not in event:
-                pass
-            elif event == '':
-                pass
-            elif str(d2) in event:
-                outbreaklist.append(event)
-                #print(event)
+        outbreaklist = str(soup.find_all(class_ = 'trimmed'))
+        outbreaklist = outbreaklist.split('<span class="trimmed">')
+        for o in outbreaklist[0:4]:
+            event = o.replace('\n', '')
+            if '</span>' in event:
+                event = event.replace('''</span>''', '')
+                event = event.replace(',','')
+                outbreaknews.append(event)
             else:
                 pass
-        if outbreaknews == '':
-            outbreaknews = ['No new outbreaks!']
         self.browser.close()
         return outbreaknews
 
