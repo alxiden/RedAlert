@@ -55,7 +55,7 @@ class PrepModule:
     def Solar(self):
         self.browser.get("https://www.spaceweatherlive.com/en/solar-activity/solar-flares.html")
         solar = self.browser.find_element_by_xpath('//*[@id="ActiveWarnings"]')
-        print(solar)
+        #print(solar)
         solar = solar.text
         XC = self.browser.find_element_by_xpath('/html/body/div[4]/div/div/div[1]/div[5]/div[1]/div/table/tbody/tr[3]/td[2]/span')
         Xclass = XC.text
