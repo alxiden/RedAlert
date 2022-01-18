@@ -62,6 +62,7 @@ See https://www.spaceweatherlive.com/en/solar-activity/solar-flares.html for mor
 {covid}
 
 {outbreaks}
+See https://www.who.int/emergencies/disease-outbreak-news for more information
 
 {earthquake}
 
