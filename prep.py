@@ -37,8 +37,12 @@ class PrepModule:
         res = requests.get("https://www.volcanodiscovery.com/earthquakes/today.html")
         soup = BeautifulSoup(res.content, 'html.parser')
         text = str(soup.select('div.textbox')[0].text)
-        x = text.index('...')
-        earthq = text[:x]
+        posa = text.index('Latest quake:')
+        posb = text.index('Strongest quake today:')
+        posc = text.index(' Past 7 days:')
+        latest = text[posa:posb]
+        strongest = text[posb:posc]
+        earthq = (latest + strongest)
         return earthq
     
     #gets local weather events
