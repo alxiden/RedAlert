@@ -179,7 +179,7 @@ class PrepModule:
         res = requests.get('https://ssd-api.jpl.nasa.gov/sentry.api?all=1&days=7')
         data  = res.json()
         for item in data['data']:
-            if item['ts'] == '0':
+            if item['ts'] == '0' or item['ts'] == None:
                 pass
             else:
                 name = item['fullname']
