@@ -37,8 +37,12 @@ class PrepModule:
         res = requests.get("https://www.volcanodiscovery.com/earthquakes/today.html")
         soup = BeautifulSoup(res.content, 'html.parser')
         text = str(soup.select('div.textbox')[0].text)
-        x = text.index('...')
-        earthq = text[:x]
+        posa = text.index('Latest quake:')
+        posb = text.index('Strongest quake today:')
+        posc = text.index(' Past 7 days:')
+        latest = text[posa:posb]
+        strongest = text[posb:posc]
+        earthq = (latest + strongest)
         return earthq
     
     #gets local weather events
@@ -54,19 +58,16 @@ class PrepModule:
     #Checks the sun for solar activity
     def Solar(self):
         self.browser.get("https://www.spaceweatherlive.com/en/solar-activity/solar-flares.html")
-        solarlist = self.browser.find_elements_by_xpath('//*[@class="alertbalk waarschuwing"]')
-        if solarlist == []:
-            warning =self.browser.find_element_by_xpath('//*[@class="alertbalk waarschuwing2"]')
-        else:
-            warning = self.browser.find_element_by_xpath('//*[@class="alertbalk waarschuwing"]')
-        solar = warning.text
-
+        solar = self.browser.find_element_by_xpath('//*[@id="ActiveWarnings"]')
+        #print(solar)
+        solar = solar.text
         XC = self.browser.find_element_by_xpath('/html/body/div[4]/div/div/div[1]/div[5]/div[1]/div/table/tbody/tr[3]/td[2]/span')
         Xclass = XC.text
 
         warning = f'{solar}, the chance of X Class solar storm {Xclass}'
 
         #print(Xclass, solar)
+        #print(warning)
         return warning
 
     #Gets volcano status for iceland
@@ -106,7 +107,9 @@ class PrepModule:
                         pass
                     else:
                         volcanosstaus.append(f'{name} is Unknown')
-        return volcanosstaus
+        volcanolevel = len(volcanosstaus)
+        vol = f'Volcano alert level scale of 1 to 20: {volcanolevel}'
+        return vol
 
     #Searches news outlets
     def newssearch(self):
@@ -153,56 +156,42 @@ class PrepModule:
 
     #WHO watchlist and outbreaks
     def outbreak(self):
-        outbreaknews = ''
-        today = date.today()
-        d1 = today.strftime('''%Y''')
-        d2 = today.strftime('''%B''')
+        outbreaknews = []
         res = requests.get('https://www.who.int/emergencies/disease-outbreak-news')
         soup = BeautifulSoup(res.content, 'html.parser')
-        #print(soup)
-        outbreaklist = str(soup.find_all(class_ = 'sf-list-vertical__title'))
-        outbreaklist = outbreaklist.replace('</h4>, <h4 class="sf-list-vertical__title">', "")
-        outbreaklist = outbreaklist.replace('<span>', '')
-        outbreaklist = outbreaklist.replace('<span aria-hidden="true" class="full-title" style="display: none">', '')
-        outbreaklist = outbreaklist.replace('<span class="trimmed">',"")
-        outbreaklist = outbreaklist.replace('</span>', "")
-        outbreaklist = outbreaklist.replace('</h4>]', '')
-        outbreaklist = outbreaklist.replace('[<h4 class="sf-list-vertical__title">', '')
-
-        outbreaklist = outbreaklist.split('|')
-        #print(outbreaklist)
-        for o in outbreaklist:
-            o = o.replace('\n', '')
-            #print(o)
-            event = o
-            if str(d1) not in event:
-                break 
-            event = event.replace('Disease Outbreak News', ' ')
-            if str(d1) not in event:
-                pass
-            elif event == '':
-                pass
-            elif str(d2) in event:
-                outbreaklist.append(event)
-                #print(event)
+        outbreaklist = str(soup.find_all(class_ = 'trimmed'))
+        outbreaklist = outbreaklist.split('<span class="trimmed">')
+        for o in outbreaklist[0:4]:
+            event = o.replace('\n', '')
+            if '</span>' in event:
+                event = event.replace('''</span>''', '')
+                event = event.replace(',','')
+                outbreaknews.append(event)
             else:
                 pass
-        if outbreaknews == '':
-            outbreaknews = ['No new outbreaks!']
         self.browser.close()
         return outbreaknews
 
+    #nasa scout and sentery to monitor near earth objects
     def asteroid(self):
-        asteroids =[]
+        chance = 1
+        asteroids =''
         res = requests.get('https://ssd-api.jpl.nasa.gov/sentry.api?all=1&days=7')
         data  = res.json()
         for item in data['data']:
-            if item['ts'] == '0':
+            if item['ts'] == '0' or item['ts'] == None:
                 pass
-        else:
-            name = item['fullname']
-            ts = item['ts']
-            asteroids.append(f'{name} has a TS of {ts} (1-10)')   
+            else:
+                name = item['fullname']
+                ts = item['ts'] 
+                tsi = int(ts)  
+                if tsi in range(0,5):
+                    chance = chance + tsi
+                elif tsi in range(5,8):
+                    chance = chance + (tsi * 5)
+                elif tsi in range(8,11):
+                    chance = chance + (tsi * 10)
+                
 
         res = requests.get('https://ssd-api.jpl.nasa.gov/scout.api')
         data = res.json()
@@ -210,11 +199,16 @@ class PrepModule:
             if item['rating'] == '0' or item['rating'] == None:
                 pass
             else:
-                o = item['objectName']
-                s = item['rating']
-                asteroids.append(f'Object {o} has a impact score {s} (0-4)')
+                ir = item['rating']
+                if ir == '1' or ir == '2':
+                    chance = chance + 1
+                elif ir == '3' or ir == '4':
+                    chance = chance + (ir * 5)
+
+        asteroids = f'Chance of an asteroid strike in the near future {chance}%'
         return asteroids
 
+    #local flood warnings by postcode
     def floodwarnings(self):
         res = requests.get(f'https://check-for-flooding.service.gov.uk/location?q={self.location}#outlook')
         soup = BeautifulSoup(res.content, 'html.parser')
@@ -230,5 +224,18 @@ class PrepModule:
         data = data.replace('</span>', '')
         return data
 
+    #south west resovoir levels used to monitor possible water shortages
     def resevoir_levels(self):
-        res = requests.get()
+        res = requests.get('https://www.southwestwater.co.uk/environment/a-precious-resource/current-reservoir-storages/')
+        soup = BeautifulSoup(res.content, 'html.parser')
+        #code = open("test.txt","w+")
+        #code.write(str(soup))
+        data = str(soup)
+        x1 = data.index('Total reservoir storage for the week')
+        y1 = data.index('</tbody>')
+        data = data[x1:y1]
+        data = data.replace('</td>', '')
+        data = data.replace('<td style="width: 27.78%; height: 18px; background-color: #eaeaea;">', '')
+        data = data.replace('</tr>', '')
+        return data
+        #print(data)
