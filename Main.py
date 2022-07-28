@@ -56,14 +56,21 @@ def Prep(source, querys, filters, locationlist, location, apiuser, recever):
         email_message = f''' 
 {asteroids}
 See https://cneos.jpl.nasa.gov/scout/#/ for more details.
+
 {volcanos}
+
 Solar Warnings:
 {solar}
+
 {weather}
+
 {outbreaks}
+
 See https://www.who.int/emergencies/disease-outbreak-news for more information
 {earthquake}
+
 {floods}
+
 {resevoir}
 '''
 
