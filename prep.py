@@ -8,13 +8,12 @@ import urllib.request
 class PrepModule:
 
     def __init__(
-        self,source, querys, filters, browser, locationlist, location
+        self,source, querys, filters, locationlist, location
     ):
         #self.api = api
         self.source = source
         self.querys = querys
         self.filters = filters
-        self.browser = browser
         self.locationlist = locationlist
         self.location = location
 
@@ -57,17 +56,15 @@ class PrepModule:
 
     #Checks the sun for solar activity
     def Solar(self):
-        self.browser.get("https://www.spaceweatherlive.com/en/solar-activity/solar-flares.html")
-        solar = self.browser.find_element_by_xpath('//*[@id="ActiveWarnings"]')
-        #print(solar)
-        solar = solar.text
-        XC = self.browser.find_element_by_xpath('/html/body/div[4]/div/div/div[1]/div[5]/div[1]/div/table/tbody/tr[3]/td[2]/span')
-        Xclass = XC.text
-
-        warning = f'{solar}, the chance of X Class solar storm {Xclass}'
-
-        #print(Xclass, solar)
-        #print(warning)
+        res = requests.get(f'https://www.metoffice.gov.uk/weather/specialist-forecasts/space-weather')
+        soup = BeautifulSoup(res.content, 'html.parser')
+        text = str(soup.find(class_ = 'space-notifications section'))
+        text = text.replace('''<div class="space-notifications section">
+<h2>Space weather notifications</h2>
+<p>''','')
+        text = text.replace('''</p>''','')
+        text = text.replace('''</div>''','')
+        warning = text
         return warning
 
     #Gets volcano status for iceland
@@ -146,13 +143,13 @@ class PrepModule:
         return news
 
     #local covid cases
-    def covid(self):
-        self.browser.get("https://www.covidlive.co.uk/")
-        time.sleep(4)
-        self.browser.find_element_by_xpath('//*[@id="South-Gloucestershire"]').click()
-        time.sleep(1)
-        covidcases = self.browser.find_element_by_xpath('/html/body/div/div[1]/div[3]/div/div/p[1]').text
-        return covidcases
+    #def covid(self):
+        #self.browser.get("https://www.covidlive.co.uk/")
+        #time.sleep(4)
+        #self.browser.find_element_by_xpath('//*[@id="South-Gloucestershire"]').click()
+        #time.sleep(1)
+        #covidcases = self.browser.find_element_by_xpath('/html/body/div/div[1]/div[3]/div/div/p[1]').text
+        #return covidcases
 
     #WHO watchlist and outbreaks
     def outbreak(self):
@@ -169,7 +166,6 @@ class PrepModule:
                 outbreaknews.append(event)
             else:
                 pass
-        self.browser.close()
         return outbreaknews
 
     #nasa scout and sentery to monitor near earth objects
@@ -199,7 +195,7 @@ class PrepModule:
             if item['rating'] == '0' or item['rating'] == None:
                 pass
             else:
-                ir = item['rating']
+                ir = int(item['rating'])
                 if ir == '1' or ir == '2':
                     chance = chance + 1
                 elif ir == '3' or ir == '4':

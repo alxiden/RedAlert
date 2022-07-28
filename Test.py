@@ -6,24 +6,31 @@ from bs4 import BeautifulSoup
 import urllib.request
 from selenium import webdriver
 
-browser = webdriver.Firefox()
+def Solar(self):
+        self.browser.get("https://www.spaceweatherlive.com/en/solar-activity/solar-flares.html")
+        solar = self.browser.find_element_by_xpath('//*[@id="ActiveWarnings"]')
+        #print(solar)
+        solar = solar.text
+        XC = self.browser.find_element_by_xpath('/html/body/div[4]/div/div/div[1]/div[5]/div[1]/div/table/tbody/tr[3]/td[2]/span')
+        Xclass = XC.text
 
-def outbreak(browser):
-        outbreaknews = []
-        res = requests.get('https://www.who.int/emergencies/disease-outbreak-news')
-        soup = BeautifulSoup(res.content, 'html.parser')
-        outbreaklist = str(soup.find_all(class_ = 'trimmed'))
-        outbreaklist = outbreaklist.split('<span class="trimmed">')
-        for o in outbreaklist[0:4]:
-            event = o.replace('\n', '')
-            if '</span>' in event:
-                event = event.replace('''</span>''', '')
-                event = event.replace(',','')
-                outbreaknews.append(event)
-            else:
-                pass
-        browser.close()
-        return outbreaknews
+        warning = f'{solar}, the chance of X Class solar storm {Xclass}'
+
+        #print(Xclass, solar)
+        #print(warning)
+        return warning
 
 
-outbreak(browser)
+def Solar2 ():
+    res = requests.get(f'https://www.metoffice.gov.uk/weather/specialist-forecasts/space-weather')
+    soup = BeautifulSoup(res.content, 'html.parser')
+    text = str(soup.find(class_ = 'space-notifications section'))
+    text = text.replace('''<div class="space-notifications section">
+<h2>Space weather notifications</h2>
+<p>''','')
+    text = text.replace('''</p>''','')
+    text = text.replace('''</div>''','')
+    #posa = text.index('h2.Space weather notifications')
+    print(text)
+
+Solar2()
