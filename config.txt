@@ -14,13 +14,13 @@ Locations Of Intrest =
 Italy Iceland Germany France Atlantic Spain Spanien Czechia
 
 Location =
-location here
+bs348xt
 
 Email User =
-email here
+alxiden@protonmail.com
 
 Email Password =
-password here
+Kingdomhearts-1
 
 Email Recepitent =
-emaill here
+danielben-1@hotmail.com
