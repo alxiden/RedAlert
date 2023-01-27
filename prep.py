@@ -220,19 +220,19 @@ class PrepModule:
         data = data.replace('</span>', '')
         return data
 
-    #south west resovoir levels used to monitor possible water shortages
-    def resevoir_levels(self):
-        res = requests.get('https://www.southwestwater.co.uk/environment/a-precious-resource/current-reservoir-storages/')
-        soup = BeautifulSoup(res.content, 'html.parser')
-        #code = open("test.txt","w+")
-        #code.write(str(soup))
-        data = str(soup)
-        x1 = data.index('Total reservoir storage for the week')
-        y1 = data.index('</tbody>')
-        data = data[x1:y1]
-        data = data.replace('</td>', '')
-        data = data.replace('<td style="width: 27.78%; height: 18px; background-color: #eaeaea;">', '')
-        data = data.replace('</tr>', '')
-        return data
+    #south west resovoir levels used to monitor possible water shortages, abandoned due to using images to display the data
+    # def resevoir_levels(self):
+    #     res = requests.get('https://www.southwestwater.co.uk/environment/a-precious-resource/current-reservoir-storages/')
+    #     soup = BeautifulSoup(res.content, 'html.parser')
+    #     #code = open("test.txt","w+")
+    #     #code.write(str(soup))
+    #     data = str(soup)
+    #     x1 = data.index('Total reservoir storage for the week')
+    #     y1 = data.index('</tbody>')
+    #     data = data[x1:y1]
+    #     data = data.replace('</td>', '')
+    #     data = data.replace('<td style="width: 27.78%; height: 18px; background-color: #eaeaea;">', '')
+    #     data = data.replace('</tr>', '')
+    #     return data
         #print(data)
         

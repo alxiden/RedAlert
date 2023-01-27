@@ -51,7 +51,7 @@ def Prep(source, querys, filters, locationlist, location, apiuser, recever):
         earthquake = RedAlert.earthquake()
         floods = RedAlert.floodwarnings()
         #news = RedAlert.newssearch()
-        resevoir = RedAlert.resevoir_levels()
+        #resevoir = RedAlert.resevoir_levels()
 
         email_message = f''' 
 {asteroids}
@@ -70,14 +70,14 @@ See https://www.who.int/emergencies/disease-outbreak-news for more information
 {earthquake}
 
 {floods}
-
-{resevoir}
 '''
 
         with smtplib.SMTP("smtp-relay.sendinblue.com", 587) as smtp_server:
-                smtp_server.login("danielbenward@gmail.com", "xsmtpsib-8bcb8dec308c2d8d8748ecf8bfd18f61df452bc45c7b6be1ee8bf37dad93cd26-W6qYJpzd7hD2vgRy")
+                smtp_server.login("danielbenward@gmail.com", "xsmtpsib-8bcb8dec308c2d8d8748ecf8bfd18f61df452bc45c7b6be1ee8bf37dad93cd26-hQHNvbCVrGWZ2IaD")
                 smtp_server.sendmail(str(apiuser), str(recever), email_message.encode('utf-8'))
 
+
+#Prep(source, querys, filters, locationlist, location, apiuser, recever)
 if __name__ == "__main__":
 
     schedule.every().day.at('6:00').do(Prep(source, querys, filters, locationlist, location, apiuser, recever))
