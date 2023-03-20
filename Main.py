@@ -77,14 +77,14 @@ See https://www.who.int/emergencies/disease-outbreak-news for more information
                 smtp_server.sendmail(str(apiuser), str(recever), email_message.encode('utf-8'))
 
 
-#Prep(source, querys, filters, locationlist, location, apiuser, recever)
-if __name__ == "__main__":
+Prep(source, querys, filters, locationlist, location, apiuser, recever)
+#if __name__ == "__main__":
+#
+#    schedule.every().day.at('06:00').do(Prep(source, querys, filters, locationlist, location, apiuser, recever))
 
-    schedule.every().day.at('6:00').do(Prep(source, querys, filters, locationlist, location, apiuser, recever))
+#    while True:
 
-    while True:
-
-        schedule.run_pending()
-        time.sleep(1)
+#        schedule.run_pending()
+#        time.sleep(1)
         
 
