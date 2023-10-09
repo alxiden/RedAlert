@@ -7,6 +7,9 @@ import time
 
 from prep import PrepModule
 
+
+
+
 config = open('RedAlert\config.txt')
 config = config.readlines()
 
