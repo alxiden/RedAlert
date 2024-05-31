@@ -1,4 +1,7 @@
 # RedAlert
+
+This project is no longer active but still a fun bit of code.
+
 A early warning system for the end of the world.
 
 Looks at news sources from BBC and the independent with key words like 'War' and 'riots' and filtering out unrelated articles.
